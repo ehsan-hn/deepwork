@@ -3,24 +3,30 @@
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import time
-from datetime import timedelta
+import datetime
 import sys
 import atexit
+from model import Session
+import db
 
+sec = 0
+task = ""
 host_path = r"/etc/hosts"
 redirect = "127.0.0.1"
-websites = ["www.facebook.com", "https://www.facebook.com", "www.varzesh3.com"]
+websites = ["www.facebook.com", "https://www.facebook.com", "www.varzesh3.com", "https://www.varzesh3.com/"]
 
 
 @atexit.register
 def quite():
     enable_sites()
-    print('bye ')
+    session = Session(task, datetime.datetime.now().date(), sec)
+    db.save_session(db.init_db(), session)
+    print("you deep worked for %i secondes!" % sec)
 
 
 def enable_sites():
     with open(host_path, 'r+') as file:
-        content = file.readlines();
+        content = file.readlines()
         file.seek(0)
         for line in content:
             if not any(website in line for website in websites):
@@ -39,16 +45,21 @@ def block_sites():
 
 
 def timer():
-    sec = 0
+    global sec
     while True:
-        time.sleep(1)
-        sys.stdout.write("\r%s" % str(timedelta(seconds=sec)))
+        sys.stdout.write("\r%s" % str(datetime.timedelta(seconds=sec)))
         sys.stdout.flush()
+        time.sleep(1)
         sec += 1
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+    task = raw_input("enter the task you will deep work on for next 25 min: ")
+    time.sleep(1)
+    print("block out all possible distraction.")
+    time.sleep(1)
+    print("Deep Work, with all your might!")
     block_sites()
+    time.sleep(1)
     timer()
-

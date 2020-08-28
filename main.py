@@ -9,6 +9,7 @@ import atexit
 from model import Session
 import db
 import csv
+import click
 
 sec = 0
 task = ""
@@ -60,8 +61,33 @@ def timer():
         sec += 1
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
+@click.group()
+def cli():
+    pass
+
+
+@click.command()
+@click.option('--url', prompt='Your url..', default="", help='site url')
+def blockurl(url):
+    print("hello %s" % url)
+    with open('urls.csv', 'a') as fd:
+        fd.write(url + "\n")
+
+
+@click.command()
+@click.option('--url', prompt='Your url that you want to unblock it..', default="", help='site url')
+def unblockurl(url):
+    with open("urls.csv", "r") as f:
+        lines = f.readlines()
+    with open("urls.csv", "w") as f:
+        for line in lines:
+            if line.strip("\n") != url:
+                f.write(line)
+
+
+@click.command()
+def start():
+    global task
     task = raw_input("enter the task you will deep work on for next 25 min: ")
     time.sleep(1)
     print("block out all possible distraction.")
@@ -70,3 +96,12 @@ if __name__ == '__main__':
     block_sites()
     time.sleep(1)
     timer()
+
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    cli.add_command(start)
+    cli.add_command(blockurl)
+    cli.add_command(unblockurl)
+    cli()
+

@@ -8,12 +8,12 @@ import sys
 import atexit
 from model import Session
 import db
+import csv
 
 sec = 0
 task = ""
 host_path = r"/etc/hosts"
 redirect = "127.0.0.1"
-websites = ["www.facebook.com", "https://www.facebook.com", "www.varzesh3.com", "https://www.varzesh3.com/"]
 
 
 @atexit.register
@@ -28,20 +28,27 @@ def enable_sites():
     with open(host_path, 'r+') as file:
         content = file.readlines()
         file.seek(0)
-        for line in content:
-            if not any(website in line for website in websites):
-                file.write(line)
-        file.truncate()
+        with open('urls.csv') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            websites = []
+            for c in csv_reader:
+                websites.append(c[0])
+            for line in content:
+                if not any(website in line for website in websites):
+                    file.write(line)
+            file.truncate()
 
 
 def block_sites():
     with open(host_path, "r+") as fileptr:
         content = fileptr.read()
-        for website in websites:
-            if website in content:
-                pass
-            else:
-                fileptr.write(redirect + "    " + website + "\n")
+        with open('urls.csv') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            for website in csv_reader:
+                if website[0] in content:
+                    pass
+                else:
+                    fileptr.write(redirect + "    " + website[0] + "\n")
 
 
 def timer():

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # This is a sample Python script.
 
 # Press Shift+F10 to execute it or replace it with your code.
@@ -12,7 +13,7 @@ import csv
 import click
 
 sec = 0
-task = ""
+this_task = ""
 host_path = r"/etc/hosts"
 redirect = "127.0.0.1"
 
@@ -20,7 +21,7 @@ redirect = "127.0.0.1"
 @atexit.register
 def quite():
     enable_sites()
-    session = Session(task, datetime.datetime.now().date(), sec)
+    session = Session(this_task, datetime.datetime.now().date(), sec)
     db.save_session(db.init_db(), session)
     print("you deep worked for %i secondes!" % sec)
 
@@ -86,9 +87,10 @@ def unblockurl(url):
 
 
 @click.command()
-def start():
-    global task
-    task = raw_input("enter the task you will deep work on for next 25 min: ")
+@click.option('--task', prompt='enter the task you will deep work on for next 25 min', default="", help='site url')
+def start(task):
+    global this_task
+    this_task = task
     time.sleep(1)
     print("block out all possible distraction.")
     time.sleep(1)
@@ -104,4 +106,3 @@ if __name__ == '__main__':
     cli.add_command(blockurl)
     cli.add_command(unblockurl)
     cli()
-

@@ -11,6 +11,7 @@ from model import Session
 import db
 import csv
 import click
+from tabulate import tabulate
 
 sec = 0
 this_task = ""
@@ -87,7 +88,7 @@ def unblockurl(url):
 
 
 @click.command()
-@click.option('--task', prompt='enter the task you will deep work on for next 25 min', default="", help='site url')
+@click.option('--task', prompt='enter the task you will deep work on for next 25 min', default="No Task", help='site url')
 def start(task):
     global this_task
     this_task = task
@@ -100,9 +101,19 @@ def start(task):
     timer()
 
 
+@click.command()
+def sessions():
+    rows = db.select_all_sessions(db.init_db())
+    table = [["id", "date", "task", "time(sec)"]]
+    for r in rows:
+        table.append([r[0], r[2], "No Task" if r[1] == "" else r[1], r[3]])
+    print(tabulate(table, headers="firstrow",  tablefmt="fancy_grid"))
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     cli.add_command(start)
     cli.add_command(blockurl)
     cli.add_command(unblockurl)
+    cli.add_command(sessions)
     cli()

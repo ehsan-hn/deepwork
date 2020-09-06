@@ -8,7 +8,6 @@ def create_connection(db_file):
     conn = None
     try:
         conn = sqlite3.connect(db_file)
-        print(sqlite3.version)
     except Error as e:
         print(e)
 
@@ -56,8 +55,7 @@ def select_all_sessions(conn):
 
     rows = cur.fetchall()
     conn.close()
-    for row in rows:
-        print(row)
+    return rows
 
 
 def init_db():

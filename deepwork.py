@@ -17,14 +17,16 @@ sec = 0
 this_task = ""
 host_path = r"/etc/hosts"
 redirect = "127.0.0.1"
+is_started = False
 
 
 @atexit.register
 def quite():
-    enable_sites()
-    session = Session(this_task, datetime.datetime.now().date(), sec)
-    db.save_session(db.init_db(), session)
-    print("you deep worked for %i secondes!" % sec)
+    if is_started:
+        enable_sites()
+        session = Session(this_task, datetime.datetime.now().date(), sec)
+        db.save_session(db.init_db(), session)
+        print("you deep worked for %i secondes!" % sec)
 
 
 def enable_sites():
@@ -91,6 +93,8 @@ def unblockurl(url):
 @click.option('--task', prompt='enter the task you will deep work on for next 25 min', default="No Task", help='site url')
 def start(task):
     global this_task
+    global is_started
+    is_started = True
     this_task = task
     time.sleep(1)
     print("block out all possible distraction.")

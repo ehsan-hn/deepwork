@@ -108,9 +108,9 @@ def start(task):
 @click.command()
 def sessions():
     rows = db.select_all_sessions(db.init_db())
-    table = [["id", "date", "task", "time(sec)"]]
+    table = [["id", "date", "task", "time"]]
     for r in rows:
-        table.append([r[0], r[2], "No Task" if r[1] == "" else r[1], r[3]])
+        table.append([r[0], r[2], "No Task" if r[1] == "" else r[1], str(datetime.timedelta(seconds=r[3]))])
     print(tabulate(table, headers="firstrow",  tablefmt="fancy_grid"))
 
 

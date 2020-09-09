@@ -6,6 +6,7 @@ setup(
     py_modules=['deepwork'],
     install_requires=[
         'Click',
+        'tabulate'
     ],
     scripts=['deepwork.py',
              'db.py',

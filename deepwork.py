@@ -16,6 +16,7 @@ from tabulate import tabulate
 sec = 0
 this_task = ""
 host_path = r"/etc/hosts"
+app_path = r"/snap/deepwork/x1"
 redirect = "127.0.0.1"
 is_started = False
 
@@ -33,7 +34,7 @@ def enable_sites():
     with open(host_path, 'r+') as file:
         content = file.readlines()
         file.seek(0)
-        with open('urls.csv') as csv_file:
+        with open('{0}/bin/urls.csv'.format(app_path)) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             websites = []
             for c in csv_reader:
@@ -47,7 +48,7 @@ def enable_sites():
 def block_sites():
     with open(host_path, "r+") as fileptr:
         content = fileptr.read()
-        with open('urls.csv') as csv_file:
+        with open('{0}/bin/urls.csv'.format(app_path)) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for website in csv_reader:
                 if website[0] in content:
@@ -74,7 +75,7 @@ def cli():
 @click.option('--url', prompt='Your url..', default="", help='site url')
 def blockurl(url):
     print("hello %s" % url)
-    with open('urls.csv', 'a') as fd:
+    with open('/snap/deepwork/x1/bin/urls.csv', 'a') as fd:
         fd.write(url + "\n")
 
 

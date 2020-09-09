@@ -10,5 +10,6 @@ setup(
     ],
     scripts=['deepwork.py',
              'db.py',
-             'model.py']
+             'model.py',
+             'urls.csv']
 )
